@@ -5,6 +5,7 @@ package com.mahesh.tax.calculator.service;
 
 import java.io.File;
 import java.io.FileReader;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.collections.FastHashMap;
@@ -51,13 +52,14 @@ public class TaxServiceCache
 	private static List<TaxEntry> csvToTaxChartData()
 	{
 		CsvToBean<TaxEntry> csvBean = new CsvToBean<TaxEntry>();
-		File file = new File("D://Tax_Chart.csv");
 		List<TaxEntry> taxChartCsvData = new ArrayList<TaxEntry>();
 		ColumnPositionMappingStrategy<TaxEntry> csvReaderColumnMappingStrategy = new ColumnPositionMappingStrategy<TaxEntry>();
 		final String[] columns = new String[] { "category", "salesTax", "importDuty", "itemName" };
 		CSVReader csvReader = null;
 		try
 		{
+			URL url=TaxServiceCache.class.getResource("/Tax_Chart.csv");
+			File file = new File(url.toURI());
 			csvReader = new CSVReader(new FileReader(file), ',', '"', 1);
 			csvReaderColumnMappingStrategy.setColumnMapping(columns);
 			csvReaderColumnMappingStrategy.setType(TaxEntry.class);
@@ -65,7 +67,7 @@ public class TaxServiceCache
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			throw new RuntimeException(e.getMessage());
 		}
 		finally
 		{
